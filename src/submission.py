@@ -17,16 +17,9 @@ from const import (
 )
 
 
-class Submissions:
+def get_submission_data():
+    api_url = API_PATH + USER_ID
+    response = requests.get(api_url)
+    json_data = response.json()
 
-    def __init__(self):
-        self.submissions = self.get_submission_data()
-        self.newest_submits = self.collect_accepted_submissions(self.submissions)
-        for contest in self.newest_submits:
-            path = PROJECT_PATH + ROOT + contest
-            os.makedirs(path, exist_ok=True)
-
-        self.options = webdriver.ChromeOptions()
-        self.options.add_argument('--headless')
-        self.driver = webdriver.Chrome(options=self.options)
-
+    return json_data
