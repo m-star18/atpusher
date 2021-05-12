@@ -57,3 +57,63 @@ class Submissions:
         self.options = webdriver.ChromeOptions()
         self.options.add_argument('--headless')
         self.driver = webdriver.Chrome(options=self.options)
+
+    def run(self):
+        os.chdir(PROJECT_PATH)
+        for submissions in self.newest_submits.values():
+            for sub in submissions:
+                # 問題番号の取得
+                problem_num = sub["problem_id"][-1]
+
+                # 古い問題の場合には数字になっているので、アルファベットに戻す
+                if problem_num.isdigit():
+                    problem_num = chr(int(problem_num) + ord('a') - 1)
+
+                # 作成するファイルへのパス
+                path = ROOT + sub["contest_id"] + "/" + problem_num
+                # 拡張子の設定（C++, Python, PyPyのみ）
+                if "C++" in sub["language"]:
+                    path += ".cpp"
+                elif ("Python" or "PyPy") in sub["language"]:
+                    path += ".py"
+
+                # 既に提出コードがある場合は取得せず、次の問題の提出を探す
+                if os.path.isfile(path):
+                    continue
+
+                # 提出ページへアクセス
+                sub_url = "https://atcoder.jp/contests/" + sub["contest_id"] + "/submissions/" + str(sub["id"])
+                self.driver.get(sub_url)
+
+                # 提出コードの取得
+                code = self.driver.find_element_by_id("submission-code")
+
+                # code.text は提出時に含めていない空白が期待に反して含まれてしまう
+                # 空白はシンタックスハイライティングによるものであるように見える
+                # innerHTML から不要なタグなどを消し、空白が意図通りのテキストを得る
+                inner_html = code.get_attribute('innerHTML')
+                list_items = re.findall(r'<li[^>]*>.*?</li>', inner_html)
+                lines = []
+                for line in list_items:
+                    line1 = re.sub(r'<[^>]+>', '', line)
+                    line2 = re.sub(r'&nbsp;', '', line1)
+                    line3 = html.unescape(line2)
+                    lines.append(line3 + "\n")
+                code_text = ''.join(lines)
+
+                with open(path, 'w') as f:
+                    f.write(code_text)
+
+                if "C++" in sub["language"]:
+                    subprocess.call(["clang-format", "-i", "-style=file", path])
+
+                dt_now = datetime.datetime.now()
+                repo = git.Repo()
+                repo.remotes.origin.pull()
+                repo.git.add("submissions/*")
+                repo.git.commit("submissions/*", message="add submission: " + dt_now.strftime('%Y/%m/%d %H:%M:%S'))
+                repo.git.push("origin", "main")
+                print(f"Finished process {sub['contest_id']} {problem_num} {sub['language']}, "
+                      f"Message...'add submission: {dt_now.strftime('%Y/%m/%d %H:%M:%S')}'")
+
+        self.driver.quit()
