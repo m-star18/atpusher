@@ -5,6 +5,9 @@ The one that automatically pushes the latest AC code from AtCoder to Github.
 ## Requirement
  
 * Python 3.9.5
+* Selenium 3.141.0
+* Requests 2.25.1
+
 
 ## Usage
 
