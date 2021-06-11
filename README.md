@@ -1,5 +1,7 @@
 # atpusher
 
+![atcoder](https://img.atcoder.jp/assets/top/img/logo_bk.svg)
+
 The one that automatically pushes the latest AC code from AtCoder to Github.
 
 ## Requirement
