@@ -26,6 +26,19 @@ def get_submission_data():
 
 
 def collect_accepted_submissions(submissions):
+    """
+    Get the "AC" submission.
+
+    Parameters
+    ----------
+    submissions : Any
+        Data in submitted json format.
+
+    Returns
+    -------
+    result : dict[Any, list]
+        A dictionary summarizing the subject's submissions.
+    """
     # If you sort by ID in ascending order, the order will be oldest first.
     sorted_data = sorted(submissions, key=lambda x: x['id'])
     submits = {}  # Update to the latest submission for each issue.
