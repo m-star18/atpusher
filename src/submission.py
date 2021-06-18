@@ -74,7 +74,7 @@ class Submissions:
                 # 拡張子の設定（C++, Python, PyPyのみ）
                 if "C++" in sub["language"]:
                     path += ".cpp"
-                elif ("Python" or "PyPy") in sub["language"]:
+                elif "Py" in sub["language"]:
                     path += ".py"
 
                 # 既に提出コードがある場合は取得せず、次の問題の提出を探す
