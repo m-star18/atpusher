@@ -101,9 +101,9 @@ class Submissions:
                 # Obtaining the submission code
                 code = self.driver.find_element_by_id("submission-code")
 
-                # code.text は提出時に含めていない空白が期待に反して含まれてしまう
-                # 空白はシンタックスハイライティングによるものであるように見える
-                # innerHTML から不要なタグなどを消し、空白が意図通りのテキストを得る
+                # code.text unexpectedly contains whitespace that was not included in the submission
+                # Spaces appear to be due to syntax highlighting
+                # Remove unnecessary tags, etc., from innerHTML to get text with whitespace as intended.
                 inner_html = code.get_attribute('innerHTML')
                 list_items = re.findall(r'<li[^>]*>.*?</li>', inner_html)
                 lines = []
