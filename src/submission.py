@@ -50,6 +50,7 @@ class Submissions:
     def __init__(self):
         self.submissions = get_submission_data()
         self.newest_submits = collect_accepted_submissions(self.submissions)
+        self.repo = git.Repo()
         for contest in self.newest_submits:
             path = PROJECT_PATH + ROOT + contest
             os.makedirs(path, exist_ok=True)
@@ -108,11 +109,10 @@ class Submissions:
                     subprocess.call(["clang-format", "-i", "-style=file", path])
 
                 dt_now = datetime.datetime.now()
-                repo = git.Repo()
-                repo.remotes.origin.pull()
-                repo.git.add("submissions/*")
-                repo.git.commit("submissions/*", message="add submission: " + dt_now.strftime('%Y/%m/%d %H:%M:%S'))
-                repo.git.push("origin", "main")
+                self.repo.remotes.origin.pull()
+                self.repo.git.add("submissions/*")
+                self.repo.git.commit("submissions/*", message="add submission: " + dt_now.strftime('%Y/%m/%d %H:%M:%S'))
+                self.repo.git.push("origin", "main")
                 print(f"Finished process {sub['contest_id']} {problem_num} {sub['language']}, "
                       f"Message...'add submission: {dt_now.strftime('%Y/%m/%d %H:%M:%S')}'")
 
