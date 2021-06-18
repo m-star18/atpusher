@@ -59,6 +59,22 @@ def collect_accepted_submissions(submissions):
 
 
 class Submissions:
+    """
+    Manage the submitted data.
+
+    Attributes
+    ----------
+    submissions : Any
+        Data in submitted json format.
+    ac_submits : dict[Any, list]
+        A dictionary summarizing the subject's submissions.
+    repo : Repo
+        The git.repo class.
+    options : Options
+        The webdriver.ChromeOptions class.
+    driver : Webdriver
+        The webdriver.Chrome class.
+    """
     def __init__(self):
         self.submissions = get_submission_data()
         self.ac_submits = collect_accepted_submissions(self.submissions)
