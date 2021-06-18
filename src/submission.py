@@ -59,7 +59,6 @@ def collect_accepted_submissions(submissions):
 
 
 class Submissions:
-
     def __init__(self):
         self.submissions = get_submission_data()
         self.newest_submits = collect_accepted_submissions(self.submissions)
@@ -76,30 +75,30 @@ class Submissions:
         os.chdir(PROJECT_PATH)
         for submissions in self.newest_submits.values():
             for sub in submissions:
-                # 問題番号の取得
+                # Get the problem number
                 problem_num = sub["problem_id"][-1]
 
-                # 古い問題の場合には数字になっているので、アルファベットに戻す
+                # For older questions, the numbers are numbers, so change them back to alphabetical.
                 if problem_num.isdigit():
                     problem_num = chr(int(problem_num) + ord('a') - 1)
 
-                # 作成するファイルへのパス
+                # Path to the file to create
                 path = ROOT + sub["contest_id"] + "/" + problem_num
-                # 拡張子の設定（C++, Python, PyPyのみ）
+                # Set extensions (C++, Python, PyPy)
                 if "C++" in sub["language"]:
                     path += ".cpp"
                 elif "Py" in sub["language"]:
                     path += ".py"
 
-                # 既に提出コードがある場合は取得せず、次の問題の提出を探す
+                # If there is already a submission code, don't get it and look for the next issue to be submitted.
                 if os.path.isfile(path):
                     continue
 
-                # 提出ページへアクセス
+                # Access the submission page
                 sub_url = "https://atcoder.jp/contests/" + sub["contest_id"] + "/submissions/" + str(sub["id"])
                 self.driver.get(sub_url)
 
-                # 提出コードの取得
+                # Obtaining the submission code
                 code = self.driver.find_element_by_id("submission-code")
 
                 # code.text は提出時に含めていない空白が期待に反して含まれてしまう
