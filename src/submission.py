@@ -61,9 +61,9 @@ def collect_accepted_submissions(submissions):
 class Submissions:
     def __init__(self):
         self.submissions = get_submission_data()
-        self.newest_submits = collect_accepted_submissions(self.submissions)
+        self.ac_submits = collect_accepted_submissions(self.submissions)
         self.repo = git.Repo()
-        for contest in self.newest_submits:
+        for contest in self.ac_submits:
             path = PROJECT_PATH + ROOT + contest
             os.makedirs(path, exist_ok=True)
 
@@ -73,7 +73,7 @@ class Submissions:
 
     def run(self):
         os.chdir(PROJECT_PATH)
-        for submissions in self.newest_submits.values():
+        for submissions in self.ac_submits.values():
             for sub in submissions:
                 # Get the problem number
                 problem_num = sub["problem_id"][-1]
