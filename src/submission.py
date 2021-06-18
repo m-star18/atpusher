@@ -26,16 +26,16 @@ def get_submission_data():
 
 
 def collect_accepted_submissions(submissions):
-    # IDで昇順ソートすると古い順になる
+    # If you sort by ID in ascending order, the order will be oldest first.
     sorted_data = sorted(submissions, key=lambda x: x['id'])
-    submits = {}  # 各問題ごとに最新の提出に更新する
+    submits = {}  # Update to the latest submission for each issue.
     for data in sorted_data:
-        # ACだった提出だけ対象
+        # For submissions that were AC only.
         if data["result"] != "AC":
             continue
         submits[data["problem_id"]] = data
 
-    # コンテストごとにまとめる
+    # Organize by contest
     result = {}
     for sub in submits.values():
         if not sub["contest_id"] in result:
